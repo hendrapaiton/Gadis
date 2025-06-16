@@ -14,7 +14,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFileDialog, QMessageBox
 from pyvistaqt import QtInteractor
 
-from transform import Transform3D
+from features.transform import Transform3D
 
 
 class MainWindow(QMainWindow):
