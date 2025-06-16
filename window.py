@@ -60,11 +60,10 @@ class MainWindow(QMainWindow):
         self.filePath.setReadOnly(True)
         self.filePath.setMinimumHeight(35)
 
-        # Create the browse button
-        self.browseButton = QToolButton()
-        self.browseButton.setText("...")
-        self.browseButton.clicked.connect(self.upload_file)
-        self.browseButton.setMinimumHeight(35)
+        # Create the upload button
+        self.uploadButton = QToolButton()
+        self.uploadButton.setText("...")
+        self.uploadButton.setMinimumHeight(35)
 
         # Create the process button
         self.processButton = QPushButton("Process")
@@ -73,7 +72,7 @@ class MainWindow(QMainWindow):
 
         # Add widgets to the bottom layout
         self.bottom_layout.addWidget(self.filePath)
-        self.bottom_layout.addWidget(self.browseButton)
+        self.bottom_layout.addWidget(self.uploadButton)
         self.bottom_layout.addWidget(self.processButton)
 
         # Add the bottom layout to the left layout
@@ -98,9 +97,10 @@ class MainWindow(QMainWindow):
         self.main_horizontal.addLayout(self.right_layout, stretch=1)
 
         # Connect signals to slots
-        self.processButton.clicked.connect(self.process_file)
+        self.uploadButton.clicked.connect(self.on_upload_button_clicked)
+        self.processButton.clicked.connect(self.on_button_process_clicked)
 
-    def upload_file(self):
+    def on_upload_button_clicked(self):
         # Open file dialog to select a DICOM series
         file_name, _ = QFileDialog.getOpenFileName(
             self,
@@ -112,7 +112,7 @@ class MainWindow(QMainWindow):
             self.filename = file_name
             self.filePath.setText(self.filename)
 
-    def process_file(self):
+    def on_button_process_clicked(self):
         # Connect QtInteractor to the DICOM viewer
         plotter = QtInteractor(self.dcmViewer)
         plotter.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -133,7 +133,7 @@ class MainWindow(QMainWindow):
         transform.display_3d_object()
 
     def closeEvent(self, event):
-        """Handle the close event to confirm exit"""
+        # Handle the close event to confirm exit
         reply = QMessageBox.question(
             self,
             "Exit Confirmation",
