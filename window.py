@@ -133,15 +133,15 @@ class MainWindow(QMainWindow):
         transform.display_3d_object()
 
     def closeEvent(self, event):
-            """Handle the close event to confirm exit and clean up temporary files"""
-            reply = QMessageBox.question(
-                self,
-                "Exit Confirmation",
-                "Are you sure you want to exit?",
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
-            )
-            if reply == QMessageBox.Yes:
-                event.accept()
-            else:
-                event.ignore()
+        """Handle the close event to confirm exit"""
+        reply = QMessageBox.question(
+            self,
+            "Exit Confirmation",
+            "Are you sure you want to exit?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
