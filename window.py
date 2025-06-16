@@ -7,6 +7,7 @@ from PySide6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
     QWidget,
+    QSizePolicy,
 )
 from pyvistaqt import QtInteractor
 
@@ -27,7 +28,8 @@ class MainWindow(QMainWindow):
         self.left_layout = QVBoxLayout()
 
         self.dcmViewer = QWidget()
-        self.dcmViewer.setMinimumHeight(350)
+        self.dcmViewer.setMinimumWidth(417)
+        self.dcmViewer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.left_layout.addWidget(self.dcmViewer)
 
         self.bottom_layout = QHBoxLayout()
@@ -60,5 +62,20 @@ class MainWindow(QMainWindow):
         self.processButton.clicked.connect(self.process_file)
 
     def process_file(self):
+        # Create plotter and set it to expand in both directions
         plotter = QtInteractor(self.dcmViewer)
+        plotter.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        
+        # Clear any existing widgets in dcmViewer's layout
+        if self.dcmViewer.layout():
+            while self.dcmViewer.layout().count():
+                item = self.dcmViewer.layout().takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
+        else:
+            layout = QVBoxLayout()
+            self.dcmViewer.setLayout(layout)
+            
+        # Add plotter to dcmViewer's layout
+        self.dcmViewer.layout().addWidget(plotter)
         display_3d_object(plotter)
