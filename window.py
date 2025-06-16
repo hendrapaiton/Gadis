@@ -55,12 +55,14 @@ class MainWindow(QMainWindow):
         self.browseButton = QToolButton()
         self.browseButton.setText("...")
         self.browseButton.clicked.connect(self.upload_file)
-        self.browseButton.setMinimumHeight(35)  # Set minimum height for QToolButton
+        # Set minimum height for QToolButton
+        self.browseButton.setMinimumHeight(35)
 
         # Create the process button
         self.processButton = QPushButton("Process")
         self.processButton.setMinimumWidth(120)
-        self.processButton.setMinimumHeight(35)  # Set minimum height for QPushButton
+        # Set minimum height for QPushButton
+        self.processButton.setMinimumHeight(35)
 
         # Add widgets to the bottom layout
         self.bottom_layout.addWidget(self.filePath)
@@ -99,7 +101,8 @@ class MainWindow(QMainWindow):
             "7-Zip Files (*.7z);;All Files (*.*)"
         )
         if file_name:
-            self.filePath.setText(file_name)
+            self.filename = file_name
+            self.filePath.setText(self.filename)
 
     def process_file(self):
         plotter = QtInteractor(self.dcmViewer)
