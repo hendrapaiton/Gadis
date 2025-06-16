@@ -1,17 +1,19 @@
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QFileDialog,
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QListWidget,
     QMainWindow,
+    QMessageBox,
     QPushButton,
+    QSizePolicy,
     QToolButton,
     QVBoxLayout,
     QWidget,
-    QSizePolicy,
 )
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFileDialog, QMessageBox
+
 from pyvistaqt import QtInteractor
 
 from features.transform import Transform3D
