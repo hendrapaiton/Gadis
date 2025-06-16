@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (
     QSizePolicy,
 )
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFileDialog
+from PySide6.QtWidgets import QFileDialog, QMessageBox
 from pyvistaqt import QtInteractor
 
 from transform import Transform3D
@@ -131,3 +131,17 @@ class MainWindow(QMainWindow):
         self.dcmViewer.layout().addWidget(plotter)
         transform = Transform3D(plotter)
         transform.display_3d_object()
+
+    def closeEvent(self, event):
+            """Handle the close event to confirm exit and clean up temporary files"""
+            reply = QMessageBox.question(
+                self,
+                "Exit Confirmation",
+                "Are you sure you want to exit?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No
+            )
+            if reply == QMessageBox.Yes:
+                event.accept()
+            else:
+                event.ignore()
