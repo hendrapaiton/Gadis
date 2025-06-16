@@ -10,10 +10,11 @@ from PySide6.QtWidgets import (
     QWidget,
     QSizePolicy,
 )
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QFileDialog
 from pyvistaqt import QtInteractor
 
 from transform import Transform3D
-from PySide6.QtWidgets import QFileDialog
 
 
 class MainWindow(QMainWindow):
@@ -22,6 +23,14 @@ class MainWindow(QMainWindow):
         # Initialize the main window
         self.setWindowTitle("GAMBAR MEDIS | GADIS | DICOM VIEWER")
         self.resize(800, 564)
+
+        self.setWindowFlags(
+            Qt.Window |
+            Qt.WindowMinimizeButtonHint |
+            Qt.WindowCloseButtonHint |
+            Qt.WindowTitleHint |
+            Qt.CustomizeWindowHint
+        )
 
         # Create the central widget and main layout
         self.central = QWidget()
