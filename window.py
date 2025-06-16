@@ -8,7 +8,9 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from PySide6.QtOpenGLWidgets import QOpenGLWidget
+from pyvistaqt import QtInteractor
+
+from transform import display_3d_object
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -24,8 +26,8 @@ class MainWindow(QMainWindow):
 
         self.left_layout = QVBoxLayout()
 
-        self.dcmViewer = QOpenGLWidget()
-        self.dcmViewer.setMinimumHeight(471)
+        self.dcmViewer = QWidget()
+        self.dcmViewer.setMinimumHeight(350)
         self.left_layout.addWidget(self.dcmViewer)
 
         self.bottom_layout = QHBoxLayout()
@@ -58,4 +60,5 @@ class MainWindow(QMainWindow):
         self.processButton.clicked.connect(self.process_file)
 
     def process_file(self):
-        print("Proses file DICOM:", self.filePath.text())
+        plotter = QtInteractor(self.dcmViewer)
+        display_3d_object(plotter)
