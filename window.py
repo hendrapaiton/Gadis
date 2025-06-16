@@ -5,68 +5,106 @@ from PySide6.QtWidgets import (
     QListWidget,
     QMainWindow,
     QPushButton,
+    QToolButton,
     QVBoxLayout,
     QWidget,
     QSizePolicy,
 )
 from pyvistaqt import QtInteractor
 
-from transform import display_3d_object
+from transform import Transform3D
+from PySide6.QtWidgets import QFileDialog
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("GAMBAR MEDIS | GADIS")
+        # Initialize the main window
+        self.setWindowTitle("GAMBAR MEDIS | GADIS | DICOM VIEWER")
         self.resize(800, 564)
 
+        # Create the central widget and main layout
         self.central = QWidget()
         self.setCentralWidget(self.central)
 
+        # Set up the main horizontal layout
         self.main_horizontal = QHBoxLayout()
         self.central.setLayout(self.main_horizontal)
 
+        # Create the left layout
         self.left_layout = QVBoxLayout()
 
+        # Create the plotter viewer
         self.dcmViewer = QWidget()
         self.dcmViewer.setMinimumWidth(417)
-        self.dcmViewer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.dcmViewer.setSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Expanding
+        )
         self.left_layout.addWidget(self.dcmViewer)
 
+        # Create the bottom layout
         self.bottom_layout = QHBoxLayout()
 
+        # Create the file input
         self.filePath = QLineEdit()
         self.filePath.setPlaceholderText("Dicom File...")
         self.filePath.setReadOnly(True)
+        self.filePath.setMinimumHeight(35)  # Set minimum height for QLineEdit
 
+        # Create the browse button
+        self.browseButton = QToolButton()
+        self.browseButton.setText("...")
+        self.browseButton.clicked.connect(self.upload_file)
+        self.browseButton.setMinimumHeight(35)  # Set minimum height for QToolButton
+
+        # Create the process button
         self.processButton = QPushButton("Process")
         self.processButton.setMinimumWidth(120)
+        self.processButton.setMinimumHeight(35)  # Set minimum height for QPushButton
 
+        # Add widgets to the bottom layout
         self.bottom_layout.addWidget(self.filePath)
+        self.bottom_layout.addWidget(self.browseButton)
         self.bottom_layout.addWidget(self.processButton)
 
+        # Add the bottom layout to the left layout
         self.left_layout.addLayout(self.bottom_layout)
 
+        # Add the left layout to the main horizontal layout
         self.main_horizontal.addLayout(self.left_layout, stretch=2)
 
+        # Create the right layout
         self.right_layout = QVBoxLayout()
 
+        # Create file list label
         self.files_label = QLabel("DICOM FILE LIST")
         self.right_layout.addWidget(self.files_label)
 
+        # Create file list widget
         self.fileList = QListWidget()
         self.fileList.setMinimumWidth(100)
         self.right_layout.addWidget(self.fileList)
 
+        # Add the right layout to the main horizontal layout
         self.main_horizontal.addLayout(self.right_layout, stretch=1)
 
+        # Connect signals to slots
         self.processButton.clicked.connect(self.process_file)
 
+    def upload_file(self):
+        file_name, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select DICOM Series",
+            "",
+            "7-Zip Files (*.7z);;All Files (*.*)"
+        )
+        if file_name:
+            self.filePath.setText(file_name)
+
     def process_file(self):
-        # Create plotter and set it to expand in both directions
         plotter = QtInteractor(self.dcmViewer)
         plotter.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        
-        # Clear any existing widgets in dcmViewer's layout
+
         if self.dcmViewer.layout():
             while self.dcmViewer.layout().count():
                 item = self.dcmViewer.layout().takeAt(0)
@@ -75,7 +113,7 @@ class MainWindow(QMainWindow):
         else:
             layout = QVBoxLayout()
             self.dcmViewer.setLayout(layout)
-            
-        # Add plotter to dcmViewer's layout
+
         self.dcmViewer.layout().addWidget(plotter)
-        display_3d_object(plotter)
+        transform = Transform3D(plotter)
+        transform.display_3d_object()
