@@ -49,19 +49,17 @@ class MainWindow(QMainWindow):
         self.filePath = QLineEdit()
         self.filePath.setPlaceholderText("Dicom File...")
         self.filePath.setReadOnly(True)
-        self.filePath.setMinimumHeight(35)  # Set minimum height for QLineEdit
+        self.filePath.setMinimumHeight(35)
 
         # Create the browse button
         self.browseButton = QToolButton()
         self.browseButton.setText("...")
         self.browseButton.clicked.connect(self.upload_file)
-        # Set minimum height for QToolButton
         self.browseButton.setMinimumHeight(35)
 
         # Create the process button
         self.processButton = QPushButton("Process")
         self.processButton.setMinimumWidth(120)
-        # Set minimum height for QPushButton
         self.processButton.setMinimumHeight(35)
 
         # Add widgets to the bottom layout
@@ -94,6 +92,7 @@ class MainWindow(QMainWindow):
         self.processButton.clicked.connect(self.process_file)
 
     def upload_file(self):
+        # Open file dialog to select a DICOM series
         file_name, _ = QFileDialog.getOpenFileName(
             self,
             "Select DICOM Series",
@@ -105,9 +104,11 @@ class MainWindow(QMainWindow):
             self.filePath.setText(self.filename)
 
     def process_file(self):
+        # Connect QtInteractor to the DICOM viewer
         plotter = QtInteractor(self.dcmViewer)
         plotter.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
+        # Clear the previous content in the DICOM viewer
         if self.dcmViewer.layout():
             while self.dcmViewer.layout().count():
                 item = self.dcmViewer.layout().takeAt(0)
@@ -117,6 +118,7 @@ class MainWindow(QMainWindow):
             layout = QVBoxLayout()
             self.dcmViewer.setLayout(layout)
 
+        # Add the plotter to the DICOM viewer
         self.dcmViewer.layout().addWidget(plotter)
         transform = Transform3D(plotter)
         transform.display_3d_object()
