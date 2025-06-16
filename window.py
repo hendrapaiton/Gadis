@@ -1,9 +1,12 @@
+import os
+import shutil
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QFileDialog,
     QHBoxLayout,
     QLabel,
-    QLineEdit,
+    QLineEdit, 
     QListWidget,
     QMainWindow,
     QMessageBox,
@@ -11,11 +14,11 @@ from PySide6.QtWidgets import (
     QSizePolicy,
     QToolButton,
     QVBoxLayout,
-    QWidget,
+    QWidget
 )
-
 from pyvistaqt import QtInteractor
 
+from features.process import ProcessFile
 from features.transform import Transform3D
 
 
@@ -113,6 +116,8 @@ class MainWindow(QMainWindow):
         if file_name:
             self.filename = file_name
             self.filePath.setText(self.filename)
+        process = ProcessFile(self.filename)
+        extract_to, dataset = process.extract_dicom_series()
 
     def on_button_process_clicked(self):
         # Connect QtInteractor to the DICOM viewer
@@ -144,6 +149,13 @@ class MainWindow(QMainWindow):
             QMessageBox.No
         )
         if reply == QMessageBox.Yes:
+            temp_dir = os.path.join(
+                os.path.dirname(
+                    os.path.abspath(__file__)
+                ), "temp")
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
+
             event.accept()
         else:
             event.ignore()
